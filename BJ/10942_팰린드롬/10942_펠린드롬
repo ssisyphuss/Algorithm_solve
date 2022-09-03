@@ -1,0 +1,60 @@
+import sys
+import time
+
+sys.stdin = open('/Users/huijaeshin/Desktop/Programming/pycharm-algorithm/BJ/10942팰린드롬/input.txt')
+
+s1 = time.time()
+
+N = int(input())
+numbers = list(map(int, input().split()))
+M = int(input())
+
+
+palindrome = [[-1 for _ in range(N)] for _ in range(N)]
+for i in range(N):
+    for j in range(N):
+        if i == j:
+            palindrome[i][j] = 1
+
+def check(s, e):
+    global palindrome, numbers
+    if numbers[s] != numbers[e]:
+        palindrome[s][e] = 0
+        return 0
+    else:
+        if s == e:  # 한 글자인 경우
+            palindrome[s][e] = 1
+            return 1
+        elif s+1 == e:  # 두 글자인 경우
+            if numbers[s] == numbers[e]:
+                palindrome[s][e] = 1
+                return 1
+            else:
+                palindrome[s][e] = 0
+                return 0
+        else:  # 세 글자 이상인 경우
+            if palindrome[s+1][e-1] == -1:  # 만일 내부 펠린드롬 체크가 안되어 있으면
+                if check(s+1, e-1):  # 체크하고, 이전까지가 펠린드롬이면
+                    palindrome[s][e] = 1
+                    return 1
+                else:
+                    palindrome[s][e] = 0
+                    return 0
+            elif palindrome[s+1][e-1] == 0:
+                palindrome[s][e] = 0
+                return 0
+            else:
+                palindrome[s][e] = 1
+                return 1
+
+
+for _ in range(M):
+    S, E = map(int, input().split())
+    if check(S-1, E-1):
+        print(1)
+    else:
+        print(0)
+
+
+print("time :", time.time() - s1)
+# 0.0002초
